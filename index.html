@@ -125,6 +125,33 @@
             font-weight: 500;
         }
 
+        .emotional-section {
+            background: rgba(255, 107, 107, 0.05);
+            border-left: 4px solid #ff6b6b;
+        }
+
+        .emotional-section h3 {
+            color: #ff6b6b;
+        }
+
+        .missing-section {
+            background: rgba(255, 193, 7, 0.05);
+            border-left: 4px solid #ffc107;
+        }
+
+        .missing-section h3 {
+            color: #e68900;
+        }
+
+        .connection-section {
+            background: rgba(40, 167, 69, 0.05);
+            border-left: 4px solid #28a745;
+        }
+
+        .connection-section h3 {
+            color: #28a745;
+        }
+
         .form-group {
             margin-bottom: 20px;
         }
@@ -276,6 +303,16 @@
             transform: translateY(-2px);
         }
 
+        .btn-print {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+        }
+
+        .btn-print:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(40, 167, 69, 0.4);
+        }
+
         .results {
             display: none;
             text-align: center;
@@ -298,6 +335,41 @@
             border-radius: 15px;
             margin-top: 20px;
             text-align: left;
+        }
+
+        .print-version {
+            display: none;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .container {
+                box-shadow: none;
+                border-radius: 0;
+                background: white;
+            }
+            
+            .header {
+                background: #667eea;
+                -webkit-print-color-adjust: exact;
+                color-adjust: exact;
+            }
+            
+            .btn-group, .person-selector {
+                display: none;
+            }
+            
+            .print-version {
+                display: block;
+            }
+            
+            .form-section.active {
+                display: block;
+            }
         }
 
         @media (max-width: 768px) {
@@ -408,6 +480,96 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- Reflexão Profunda - O que mais machuca -->
+                    <div class="question-group emotional-section">
+                        <h3>🌪️ O que mais me machuca hoje na relação</h3>
+                        
+                        <div class="form-group">
+                            <label for="machucarOuvir">O que eu mais sinto falta de ouvir da sua boca?</label>
+                            <textarea id="machucarOuvir" name="machucarOuvir" placeholder="Expresse seus sentimentos mais profundos sobre o que gostaria de ouvir..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="sentirInvisivel">Em que momentos eu me sinto invisível ou ignorada?</label>
+                            <textarea id="sentirInvisivel" name="sentirInvisivel" placeholder="Descreva as situações onde se sente negligenciada..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="carregandoSozinha">O que me faz sentir que estou carregando sozinha essa relação?</label>
+                            <textarea id="carregandoSozinha" name="carregandoSozinha" placeholder="Explique quando se sente sobrecarregada na relação..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="episodioRecente">Qual foi o episódio recente que mais me fez duvidar se ainda sou importante para você?</label>
+                            <textarea id="episodioRecente" name="episodioRecente" placeholder="Conte sobre uma situação específica que marcou você..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="reacaoDesejada">Quando eu choro ou desabo, como eu gostaria que você reagisse?</label>
+                            <textarea id="reacaoDesejada" name="reacaoDesejada" placeholder="Descreva como gostaria de ser acolhida em momentos difíceis..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Reflexão Profunda - O que tem faltado -->
+                    <div class="question-group missing-section">
+                        <h3>🌱 O que tem faltado entre nós</h3>
+                        
+                        <div class="form-group">
+                            <label for="parouDeFazer">O que você parou de fazer e que antes me fazia bem?</label>
+                            <textarea id="parouDeFazer" name="parouDeFazer" placeholder="Relembre os gestos e atitudes que faziam diferença..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="precisoNaoPosso">O que eu preciso e sinto que não posso pedir?</label>
+                            <textarea id="precisoNaoPosso" name="precisoNaoPosso" placeholder="Compartilhe suas necessidades não expressas..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="presencaEmocional">Que tipo de presença emocional eu gostaria de ter mais?</label>
+                            <textarea id="presencaEmocional" name="presencaEmocional" placeholder="Descreva a conexão emocional que busca..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="falhandoTime">Onde estamos falhando como time?</label>
+                            <textarea id="falhandoTime" name="falhandoTime" placeholder="Identifique onde vocês não estão funcionando como parceiros..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tentoMostrar">O que eu tento te mostrar e parece que você não vê?</label>
+                            <textarea id="tentoMostrar" name="tentoMostrar" placeholder="Expresse o que sente que não está sendo compreendido..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Reflexão Profunda - O que ainda nos conecta -->
+                    <div class="question-group connection-section">
+                        <h3>🔆 O que ainda nos conecta</h3>
+                        
+                        <div class="form-group">
+                            <label for="fazemosBem">O que a gente faz bem juntos, mesmo em meio ao caos?</label>
+                            <textarea id="fazemosBem" name="fazemosBem" placeholder="Reconheça os pontos fortes que ainda existem..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="ultimoMomentoFeliz">Qual foi o último momento em que eu me senti feliz com você de verdade?</label>
+                            <textarea id="ultimoMomentoFeliz" name="ultimoMomentoFeliz" placeholder="Relembre um momento especial recente..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="admiroVoce">O que eu admiro em você, mesmo com tudo que tem doído?</label>
+                            <textarea id="admiroVoce" name="admiroVoce" placeholder="Reconheça as qualidades que ainda valoriza no parceiro..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="percebeCarinho">Em que situações eu percebo que ainda existe carinho entre nós?</label>
+                            <textarea id="percebeCarinho" name="percebeCarinho" placeholder="Identifique os sinais de afeto que ainda existem..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="dispostaTentar">Por que, mesmo ferida, eu ainda estou disposta a tentar?</label>
+                            <textarea id="dispostaTentar" name="dispostaTentar" placeholder="Reflita sobre suas motivações para continuar investindo na relação..."></textarea>
                         </div>
                     </div>
 
@@ -666,6 +828,7 @@
                     <div class="btn-group">
                         <button type="submit" class="btn btn-primary">Concluir Avaliação</button>
                         <button type="button" class="btn btn-secondary" onclick="resetForm()">Limpar Formulário</button>
+                        <button type="button" class="btn btn-print" onclick="printForm()">🖨️ Versão para Impressão</button>
                     </div>
                 </div>
             </form>
@@ -684,6 +847,7 @@
                 <div class="btn-group">
                     <button type="button" class="btn btn-primary" onclick="startNew()">Nova Avaliação</button>
                     <button type="button" class="btn btn-secondary" onclick="downloadResults()">Baixar Resultados</button>
+                    <button type="button" class="btn btn-print" onclick="printForm()">🖨️ Versão para Impressão</button>
                 </div>
             </div>
         </div>
@@ -845,22 +1009,44 @@
 
         // Função para baixar resultados
         function downloadResults() {
-            var content = 'AVALIAÇÃO DE RELACIONAMENTO\n\n';
+            var content = 'AVALIAÇÃO DE RELACIONAMENTO\n';
+            content += '=======================================\n\n';
             
             for (var person in avaliacoes) {
                 if (avaliacoes.hasOwnProperty(person)) {
                     content += '===== ' + person.toUpperCase() + ' =====\n\n';
                     var data = avaliacoes[person];
                     
-                    for (var key in data) {
-                        if (data.hasOwnProperty(key)) {
-                            var value = data[key];
-                            content += key + ': ';
+                    // Seções específicas
+                    var sections = {
+                        'INFORMAÇÕES BÁSICAS': ['nome', 'tempoRelacionamento'],
+                        'AVALIAÇÃO GERAL': ['avaliacaoGeral'],
+                        'O QUE MAIS MACHUCA': ['machucarOuvir', 'sentirInvisivel', 'carregandoSozinha', 'episodioRecente', 'reacaoDesejada'],
+                        'O QUE TEM FALTADO': ['parouDeFazer', 'precisoNaoPosso', 'presencaEmocional', 'falhandoTime', 'tentoMostrar'],
+                        'O QUE AINDA NOS CONECTA': ['fazemosBem', 'ultimoMomentoFeliz', 'admiroVoce', 'percebeCarinho', 'dispostaTentar'],
+                        'PONTOS POSITIVOS': ['pontosPositivos', 'outrosPositivos'],
+                        'PONTOS CRÍTICOS': ['pontosCriticos', 'outrosCriticos'],
+                        'ÁREAS ESPECÍFICAS': ['comunicacao', 'confianca', 'intimidade', 'apoio'],
+                        'EXPECTATIVAS E MELHORIAS': ['melhorias', 'contribuicao', 'objetivos'],
+                        'COMPROMETIMENTO': ['comprometimento', 'observacoes']
+                    };
+                    
+                    for (var sectionName in sections) {
+                        if (sections.hasOwnProperty(sectionName)) {
+                            content += sectionName + ':\n';
+                            content += '-------------------\n';
                             
-                            if (Array.isArray(value)) {
-                                content += value.join(', ');
-                            } else {
-                                content += value;
+                            var fields = sections[sectionName];
+                            for (var j = 0; j < fields.length; j++) {
+                                var field = fields[j];
+                                if (data[field]) {
+                                    var value = data[field];
+                                    if (Array.isArray(value)) {
+                                        content += field + ': ' + value.join(', ') + '\n';
+                                    } else {
+                                        content += field + ': ' + value + '\n';
+                                    }
+                                }
                             }
                             content += '\n';
                         }
@@ -869,7 +1055,7 @@
                 }
             }
             
-            var blob = new Blob([content], { type: 'text/plain' });
+            var blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
             var url = window.URL.createObjectURL(blob);
             var a = document.createElement('a');
             a.href = url;
@@ -878,6 +1064,11 @@
             a.click();
             document.body.removeChild(a);
             window.URL.revokeObjectURL(url);
+        }
+
+        // Função para imprimir formulário
+        function printForm() {
+            window.print();
         }
     </script>
 </body>
