@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avaliação de Relacionamento</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .form-content {
+            padding: 40px;
+        }
+
+        .person-selector {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .person-selector h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: 400;
+        }
+
+        .person-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .person-btn {
+            padding: 15px 30px;
+            border: 2px solid #667eea;
+            background: transparent;
+            color: #667eea;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            min-width: 150px;
+        }
+
+        .person-btn:hover, .person-btn.active {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .form-section {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-title {
+            color: #333;
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            text-align: center;
+            font-weight: 300;
+        }
+
+        .question-group {
+            margin-bottom: 35px;
+            background: rgba(102, 126, 234, 0.05);
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 4px solid #667eea;
+        }
+
+        .question-group h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            font-weight: 500;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .rating-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .rating-scale {
+            display: flex;
+            gap: 10px;
+        }
+
+        .rating-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .rating-item:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .rating-item input[type="radio"] {
+            margin-bottom: 5px;
+            transform: scale(1.2);
+            accent-color: #667eea;
+        }
+
+        .rating-item label {
+            font-size: 0.9rem;
+            text-align: center;
+            margin: 0;
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            transition: background 0.2s ease;
+        }
+
+        .checkbox-item:hover {
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            transform: scale(1.2);
+            accent-color: #667eea;
+        }
+
+        .btn-group {
+            text-align: center;
+            margin-top: 40px;
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 150px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .results {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .results.active {
+            display: block;
+        }
+
+        .results h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+
+        .results-content {
+            background: rgba(102, 126, 234, 0.05);
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+
+            .form-content {
+                padding: 20px;
+            }
+
+            .header {
+                padding: 30px 20px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .person-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .rating-scale {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .btn-group {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Avaliação de Relacionamento</h1>
+            <p>Um espaço para reflexão madura e construtiva sobre nosso relacionamento</p>
+        </div>
+
+        <div class="form-content">
+            <div class="person-selector">
+                <h2>Quem está respondendo?</h2>
+                <div class="person-buttons">
+                    <button type="button" class="person-btn" onclick="selectPerson('pessoa1')">Pessoa 1</button>
+                    <button type="button" class="person-btn" onclick="selectPerson('pessoa2')">Pessoa 2</button>
+                </div>
+            </div>
+
+            <form id="avaliacaoForm">
+                <div id="formSection" class="form-section">
+                    <h2 class="section-title">Avaliação Individual do Relacionamento</h2>
+
+                    <!-- Informações Básicas -->
+                    <div class="question-group">
+                        <h3>Informações Básicas</h3>
+                        <div class="form-group">
+                            <label for="nome">Nome (opcional):</label>
+                            <input type="text" id="nome" name="nome">
+                        </div>
+                        <div class="form-group">
+                            <label for="tempoRelacionamento">Há quanto tempo estão juntos?</label>
+                            <select id="tempoRelacionamento" name="tempoRelacionamento" required>
+                                <option value="">Selecione...</option>
+                                <option value="menos-1ano">Menos de 1 ano</option>
+                                <option value="1-2anos">1 a 2 anos</option>
+                                <option value="2-5anos">2 a 5 anos</option>
+                                <option value="5-10anos">5 a 10 anos</option>
+                                <option value="mais-10anos">Mais de 10 anos</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Avaliação Geral -->
+                    <div class="question-group">
+                        <h3>Avaliação Geral do Relacionamento</h3>
+                        <div class="form-group">
+                            <label>Como você avalia o relacionamento atualmente?</label>
+                            <div class="rating-group">
+                                <div class="rating-scale">
+                                    <div class="rating-item">
+                                        <input type="radio" id="geral1" name="avaliacaoGeral" value="1" required>
+                                        <label for="geral1">1<br>Muito insatisfeito</label>
+                                    </div>
+                                    <div class="rating-item">
+                                        <input type="radio" id="geral2" name="avaliacaoGeral" value="2">
+                                        <label for="geral2">2<br>Insatisfeito</label>
+                                    </div>
+                                    <div class="rating-item">
+                                        <input type="radio" id="geral3" name="avaliacaoGeral" value="3">
+                                        <label for="geral3">3<br>Neutro</label>
+                                    </div>
+                                    <div class="rating-item">
+                                        <input type="radio" id="geral4" name="avaliacaoGeral" value="4">
+                                        <label for="geral4">4<br>Satisfeito</label>
+                                    </div>
+                                    <div class="rating-item">
+                                        <input type="radio" id="geral5" name="avaliacaoGeral" value="5">
+                                        <label for="geral5">5<br>Muito satisfeito</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pontos Positivos -->
+                    <div class="question-group">
+                        <h3>Pontos Positivos do Relacionamento</h3>
+                        <div class="form-group">
+                            <label>Quais aspectos você mais valoriza no relacionamento? (Marque todos que se aplicam)</label>
+                            <div class="checkbox-group">
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="pos1" name="pontosPositivos" value="comunicacao">
+                                    <label for="pos1">Comunicação aberta e honesta</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="pos2" name="pontosPositivos" value="confianca">
+                                    <label for="pos2">Confiança mútua</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="pos3" name="pontosPositivos" value="intimidade">
+                                    <label for="pos3">Intimidade física e emocional</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="pos4" name="pontosPositivos" value="apoio">
+                                    <label for="pos4">Apoio mútuo</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="pos5" name="pontosPositivos" value="diversao">
+                                    <label for="pos5">Diversão e momentos alegres</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="pos6" name="pontosPositivos" value="objetivos">
+                                    <label for="pos6">Objetivos compartilhados</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="pos7" name="pontosPositivos" value="respeito">
+                                    <label for="pos7">Respeito mútuo</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="pos8" name="pontosPositivos" value="crescimento">
+                                    <label for="pos8">Crescimento pessoal conjunto</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="outrosPositivos">Outros pontos positivos que gostaria de mencionar:</label>
+                            <textarea id="outrosPositivos" name="outrosPositivos" placeholder="Descreva outros aspectos positivos que considera importantes..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Pontos Críticos -->
+                    <div class="question-group">
+                        <h3>Pontos Críticos e Desafios</h3>
+                        <div class="form-group">
+                            <label>Quais são os principais desafios do relacionamento? (Marque todos que se aplicam)</label>
+                            <div class="checkbox-group">
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="crit1" name="pontosCriticos" value="comunicacao-dificil">
+                                    <label for="crit1">Dificuldades de comunicação</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="crit2" name="pontosCriticos" value="tempo-qualidade">
+                                    <label for="crit2">Falta de tempo de qualidade juntos</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="crit3" name="pontosCriticos" value="financas">
+                                    <label for="crit3">Questões financeiras</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="crit4" name="pontosCriticos" value="intimidade-problemas">
+                                    <label for="crit4">Problemas de intimidade</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="crit5" name="pontosCriticos" value="familia-amigos">
+                                    <label for="crit5">Conflitos com família/amigos</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="crit6" name="pontosCriticos" value="objetivos-diferentes">
+                                    <label for="crit6">Objetivos de vida diferentes</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="crit7" name="pontosCriticos" value="ciumes">
+                                    <label for="crit7">Ciúmes ou insegurança</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="crit8" name="pontosCriticos" value="estresse-externo">
+                                    <label for="crit8">Estresse externo (trabalho, saúde, etc.)</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="outrosCriticos">Outros desafios que gostaria de mencionar:</label>
+                            <textarea id="outrosCriticos" name="outrosCriticos" placeholder="Descreva outros desafios ou preocupações..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Áreas Específicas -->
+                    <div class="question-group">
+                        <h3>Avaliação de Áreas Específicas</h3>
+                        
+                        <div class="form-group">
+                            <label>Comunicação (1-5):</label>
+                            <div class="rating-scale">
+                                <div class="rating-item">
+                                    <input type="radio" id="com1" name="comunicacao" value="1" required>
+                                    <label for="com1">1</label>
+                                </div>
+                                <div class="rating-item">
+                                    <input type="radio" id="com2" name="comunicacao" value="2">
+                                    <label for="com2">2</label>
+                                </div>
+                                <div class="rating-item">
+                                    <input type="radio" id="com3" name="comunicacao" value="3">
+                                    <label for="com3">3</label>
+                                </div>
+                                <div class="rating-item">
+                                    <input type="radio" id="com4" name="comunicacao" value="4">
+                                    <label for="com4">4</label>
+                                </div>
+                                <div class="rating-item">
+                                    <input type="radio" id="com5" name="comunicacao" value="5">
+                                    <label for="com5">5</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Confiança (1-5):</label>
+                            <div class="rating-scale">
+                                <div class="rating-item">
+                                    <input type="radio" id="conf1" name="confianca" value="1" required>
+                                    <label for="conf1">1</label>
+                                </div>
+                                <div class="rating-item">
+                                    <input type="radio" id="conf2" name="confianca" value="2">
+                                    <label for="conf2">2</label>
+                                </div>
+                                <div class="rating-item">
+                                    <input type="radio" id="conf3" name="confianca" value="3">
+                                    <label for="conf3">3</label>
+                                </div>
+                                <div class="rating-item">
+                                    <input type="radio" id="conf4" name="confianca" value="4">
+                                    <label for="conf4">4</label>
+                                </div>
+                                <div class="rating-item">
+                                    <input type="radio" id="conf5" name="confianca" value="5">
+                                    <label for="conf5">5</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Intimidade (1-5):</label>
+                            <div class="rating-scale">
+                                <div class="rating-item">
+                                    <input type="radio" id="int1" name="intimidade" value="1" required>
+                                    <label for="int1">1</label>
+                                </div>
+                                <div class="rating-item">
+                                    <input type="radio" id="int2" name="intimidade" value="2">
+                                    <label for="int2">2</label>
+                                </div>
+                                <div class="rating-item">
+                                    <input type="radio" id="int3" name="intimidade" value="3">
+                                    <label for="int3">3</label>
+                                </div>
+                                <div class="rating-item">
+                                    <input type="radio" id="int4" name="intimidade" value="4">
+                                    <label for="int4">4</label>
+                                </div>
+                                <div class="rating-item">
+                                    <input type="radio" id="int5" name="intimidade" value="5">
+                                    <label for="int5">5</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Apoio Mútuo (1-5):</label>
+                            <div class="rating-scale">
+                                <div class="rating-item">
+                                    <input type="radio" id="ap1" name="apoio" value="1" required>
+                                    <label for="ap1">1</label>
+                                </div>
+                                <div class="rating-item">
+                                    <input type="radio" id="ap2" name="apoio" value="2">
+                                    <label for="ap2">2</label>
+                                </div>
+                                <div class="rating-item">
+                                    <input type="radio" id="ap3" name="apoio" value="3">
+                                    <label for="ap3">3</label>
+                                </div>
+                                <div class="rating-item">
+                                    <input type="radio" id="ap4" name="apoio" value="4">
+                                    <label for="ap4">4</label>
+                                </div>
+                                <div class="rating-item">
+                                    <input type="radio" id="ap5" name="apoio" value="5">
+                                    <label for="ap5">5</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Expectativas e Melhorias -->
+                    <div class="question-group">
+                        <h3>Expectativas e Melhorias</h3>
+                        <div class="form-group">
+                            <label for="melhorias">O que você gostaria que melhorasse no relacionamento?</label>
+                            <textarea id="melhorias" name="melhorias" placeholder="Seja específico sobre as mudanças que gostaria de ver..." required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="contribuicao">Como você pode contribuir para essas melhorias?</label>
+                            <textarea id="contribuicao" name="contribuicao" placeholder="Que mudanças você está disposto(a) a fazer?" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="objetivos">Quais são seus objetivos para o relacionamento nos próximos 6 meses?</label>
+                            <textarea id="objetivos" name="objetivos" placeholder="Descreva suas expectativas e metas..." required></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Comprometimento -->
+                    <div class="question-group">
+                        <h3>Comprometimento</h3>
+                        <div class="form-group">
+                            <label>Nível de comprometimento com o relacionamento (1-5):</label>
+                            <div class="rating-scale">
+                                <div class="rating-item">
+                                    <input type="radio" id="comp1" name="comprometimento" value="1" required>
+                                    <label for="comp1">1<br>Baixo</label>
+                                </div>
+                                <div class="rating-item">
+                                    <input type="radio" id="comp2" name="comprometimento" value="2">
+                                    <label for="comp2">2<br>Moderado</label>
+                                </div>
+                                <div class="rating-item">
+                                    <input type="radio" id="comp3" name="comprometimento" value="3">
+                                    <label for="comp3">3<br>Médio</label>
+                                </div>
+                                <div class="rating-item">
+                                    <input type="radio" id="comp4" name="comprometimento" value="4">
+                                    <label for="comp4">4<br>Alto</label>
+                                </div>
+                                <div class="rating-item">
+                                    <input type="radio" id="comp5" name="comprometimento" value="5">
+                                    <label for="comp5">5<br>Muito Alto</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="observacoes">Observações finais ou comentários adicionais:</label>
+                            <textarea id="observacoes" name="observacoes" placeholder="Compartilhe qualquer outro pensamento ou sentimento importante..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-primary">Concluir Avaliação</button>
+                        <button type="button" class="btn btn-secondary" onclick="resetForm()">Limpar Formulário</button>
+                    </div>
+                </div>
+            </form>
+
+            <div id="results" class="results">
+                <h2>✅ Avaliação Concluída!</h2>
+                <p>Obrigado por dedicar tempo para refletir sobre seu relacionamento.</p>
+                <div class="results-content">
+                    <p><strong>Próximos passos sugeridos:</strong></p>
+                    <p>1. Aguarde seu(sua) parceiro(a) completar a avaliação</p>
+                    <p>2. Conversem sobre as respostas de forma aberta e sem julgamentos</p>
+                    <p>3. Identifiquem pontos em comum e diferenças</p>
+                    <p>4. Criem um plano de ação conjunto para trabalhar nas melhorias</p>
+                    <p>5. Estabeleçam um cronograma para revisitar esta avaliação</p>
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary" onclick="startNew()">Nova Avaliação</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentPerson = '';
+        let avaliacoes = {};
+
+        function selectPerson(person) {
+            currentPerson = person;
+            
+            // Update button states
+            document.querySelectorAll('.person-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Show form section
+            document.getElementById('formSection').classList.add('active');
+            
+            // Load saved data if exists
+            if (avaliacoes[person]) {
+                loadFormData(avaliacoes[person]);
+            } else {
+                document.getElementById('avaliacaoForm').reset();
+            }
+            
+            // Smooth scroll to form
+            document.getElementById('formSection').scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+
+        function saveFormData() {
+            if (!currentPerson) return {};
+            
+            const formData = new FormData(document.getElementById('avaliacaoForm'));
+            const data = {};
+            
+            // Handle regular form fields
+            for (let [key, value] of formData.entries()) {
+                if (data[key]) {
+                    if (Array.isArray(data[key])) {
+                        data[key].push(value);
+                    } else {
+                        data[key] = [data[key], value];
+                    }
+                } else {
+                    data[key] = value;
+                }
+            }
+            
+            // Handle checkboxes separately to get all values
+            const checkboxGroups = ['pontosPositivos', 'pontosCriticos'];
+            checkboxGroups.forEach(group => {
+                const checkboxes = document.querySelectorAll(`input[name="${group}"]:checked`);
+                data[group] = Array.from(checkboxes).map(cb => cb.value);
+            });
+            
+            return data;
+        }
+
+        function loadFormData(data) {
+            // Load text inputs and selects
+            Object.keys(data).forEach(key => {
+                const element = document.querySelector(`[name="${key}"]`);
+                if (element) {
+                    if (element.type === 'radio') {
+                        const radio = document.querySelector(`[name="${key}"][value="${data[key]}"]`);
+                        if (radio) radio.checked = true;
+                    } else if (element.type === 'checkbox') {
+                        if (Array.isArray(data
