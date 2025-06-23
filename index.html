@@ -167,11 +167,14 @@
             align-items: center;
             gap: 15px;
             flex-wrap: wrap;
+            justify-content: center;
         }
 
         .rating-scale {
             display: flex;
             gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         .rating-item {
@@ -182,6 +185,7 @@
             padding: 10px;
             border-radius: 10px;
             transition: all 0.3s ease;
+            min-width: 60px;
         }
 
         .rating-item:hover {
@@ -198,6 +202,7 @@
             font-size: 0.9rem;
             text-align: center;
             margin: 0;
+            cursor: pointer;
         }
 
         .checkbox-group {
@@ -223,6 +228,10 @@
         .checkbox-item input[type="checkbox"] {
             transform: scale(1.2);
             accent-color: #667eea;
+        }
+
+        .checkbox-item label {
+            cursor: pointer;
         }
 
         .btn-group {
@@ -323,6 +332,10 @@
                 flex-direction: column;
                 align-items: center;
             }
+
+            .checkbox-group {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -337,12 +350,12 @@
             <div class="person-selector">
                 <h2>Quem está respondendo?</h2>
                 <div class="person-buttons">
-                    <button type="button" class="person-btn" onclick="selectPerson('pessoa1')">Pessoa 1</button>
-                    <button type="button" class="person-btn" onclick="selectPerson('pessoa2')">Pessoa 2</button>
+                    <button type="button" class="person-btn" id="pessoa1-btn" onclick="selectPerson('pessoa1')">Pessoa 1</button>
+                    <button type="button" class="person-btn" id="pessoa2-btn" onclick="selectPerson('pessoa2')">Pessoa 2</button>
                 </div>
             </div>
 
-            <form id="avaliacaoForm">
+            <form id="avaliacaoForm" onsubmit="submitForm(event)">
                 <div id="formSection" class="form-section">
                     <h2 class="section-title">Avaliação Individual do Relacionamento</h2>
 
@@ -670,49 +683,60 @@
                 </div>
                 <div class="btn-group">
                     <button type="button" class="btn btn-primary" onclick="startNew()">Nova Avaliação</button>
+                    <button type="button" class="btn btn-secondary" onclick="downloadResults()">Baixar Resultados</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        let currentPerson = '';
-        let avaliacoes = {};
+        // Variáveis globais
+        var currentPerson = '';
+        var avaliacoes = {};
 
+        // Função para selecionar pessoa
         function selectPerson(person) {
             currentPerson = person;
             
-            // Update button states
-            document.querySelectorAll('.person-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
+            // Remover classe active de todos os botões
+            var buttons = document.querySelectorAll('.person-btn');
+            for (var i = 0; i < buttons.length; i++) {
+                buttons[i].classList.remove('active');
+            }
             
-            // Show form section
+            // Adicionar classe active ao botão clicado
+            document.getElementById(person + '-btn').classList.add('active');
+            
+            // Mostrar seção do formulário
             document.getElementById('formSection').classList.add('active');
             
-            // Load saved data if exists
+            // Carregar dados salvos se existirem
             if (avaliacoes[person]) {
                 loadFormData(avaliacoes[person]);
             } else {
                 document.getElementById('avaliacaoForm').reset();
             }
             
-            // Smooth scroll to form
+            // Fazer scroll suave para o formulário
             document.getElementById('formSection').scrollIntoView({ 
                 behavior: 'smooth',
                 block: 'start'
             });
         }
 
+        // Função para salvar dados do formulário
         function saveFormData() {
             if (!currentPerson) return {};
             
-            const formData = new FormData(document.getElementById('avaliacaoForm'));
-            const data = {};
+            var form = document.getElementById('avaliacaoForm');
+            var formData = new FormData(form);
+            var data = {};
             
-            // Handle regular form fields
-            for (let [key, value] of formData.entries()) {
+            // Obter valores dos campos
+            for (var pair of formData.entries()) {
+                var key = pair[0];
+                var value = pair[1];
+                
                 if (data[key]) {
                     if (Array.isArray(data[key])) {
                         data[key].push(value);
@@ -724,23 +748,137 @@
                 }
             }
             
-            // Handle checkboxes separately to get all values
-            const checkboxGroups = ['pontosPositivos', 'pontosCriticos'];
-            checkboxGroups.forEach(group => {
-                const checkboxes = document.querySelectorAll(`input[name="${group}"]:checked`);
-                data[group] = Array.from(checkboxes).map(cb => cb.value);
-            });
+            // Tratar checkboxes separadamente
+            var checkboxGroups = ['pontosPositivos', 'pontosCriticos'];
+            for (var i = 0; i < checkboxGroups.length; i++) {
+                var group = checkboxGroups[i];
+                var checkboxes = document.querySelectorAll('input[name="' + group + '"]:checked');
+                var values = [];
+                for (var j = 0; j < checkboxes.length; j++) {
+                    values.push(checkboxes[j].value);
+                }
+                data[group] = values;
+            }
             
             return data;
         }
 
+        // Função para carregar dados do formulário
         function loadFormData(data) {
-            // Load text inputs and selects
-            Object.keys(data).forEach(key => {
-                const element = document.querySelector(`[name="${key}"]`);
-                if (element) {
-                    if (element.type === 'radio') {
-                        const radio = document.querySelector(`[name="${key}"][value="${data[key]}"]`);
-                        if (radio) radio.checked = true;
-                    } else if (element.type === 'checkbox') {
-                        if (Array.isArray(data
+            for (var key in data) {
+                if (data.hasOwnProperty(key)) {
+                    var value = data[key];
+                    var elements = document.querySelectorAll('[name="' + key + '"]');
+                    
+                    for (var i = 0; i < elements.length; i++) {
+                        var element = elements[i];
+                        
+                        if (element.type === 'radio') {
+                            if (element.value === value) {
+                                element.checked = true;
+                            }
+                        } else if (element.type === 'checkbox') {
+                            if (Array.isArray(value) && value.indexOf(element.value) !== -1) {
+                                element.checked = true;
+                            }
+                        } else {
+                            element.value = value;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Função para submeter o formulário
+        function submitForm(event) {
+            event.preventDefault();
+            
+            if (!currentPerson) {
+                alert('Por favor, selecione quem está respondendo antes de enviar.');
+                return;
+            }
+            
+            // Salvar dados
+            avaliacoes[currentPerson] = saveFormData();
+            
+            // Mostrar resultados
+            document.getElementById('formSection').classList.remove('active');
+            document.getElementById('results').classList.add('active');
+            
+            // Scroll para resultados
+            document.getElementById('results').scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+
+        // Função para limpar formulário
+        function resetForm() {
+            if (confirm('Tem certeza que deseja limpar todas as respostas?')) {
+                document.getElementById('avaliacaoForm').reset();
+                if (currentPerson) {
+                    delete avaliacoes[currentPerson];
+                }
+            }
+        }
+
+        // Função para iniciar nova avaliação
+        function startNew() {
+            document.getElementById('results').classList.remove('active');
+            document.getElementById('formSection').classList.remove('active');
+            
+            // Remover classe active dos botões
+            var buttons = document.querySelectorAll('.person-btn');
+            for (var i = 0; i < buttons.length; i++) {
+                buttons[i].classList.remove('active');
+            }
+            
+            currentPerson = '';
+            document.getElementById('avaliacaoForm').reset();
+            
+            // Scroll para o topo
+            document.querySelector('.person-selector').scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+
+        // Função para baixar resultados
+        function downloadResults() {
+            var content = 'AVALIAÇÃO DE RELACIONAMENTO\n\n';
+            
+            for (var person in avaliacoes) {
+                if (avaliacoes.hasOwnProperty(person)) {
+                    content += '===== ' + person.toUpperCase() + ' =====\n\n';
+                    var data = avaliacoes[person];
+                    
+                    for (var key in data) {
+                        if (data.hasOwnProperty(key)) {
+                            var value = data[key];
+                            content += key + ': ';
+                            
+                            if (Array.isArray(value)) {
+                                content += value.join(', ');
+                            } else {
+                                content += value;
+                            }
+                            content += '\n';
+                        }
+                    }
+                    content += '\n';
+                }
+            }
+            
+            var blob = new Blob([content], { type: 'text/plain' });
+            var url = window.URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = 'avaliacao-relacionamento.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>
